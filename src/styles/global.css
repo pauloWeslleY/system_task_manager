@@ -1,0 +1,15 @@
+::-webkit-scrollbar {
+  width: 0.71rem;
+}
+::-webkit-scrollbar-track {
+  background: rgba(77, 80, 88, 0.1);
+}
+::-webkit-scrollbar-thumb {
+  background: #6a64d9;
+  border-radius: 2.2rem;
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
