@@ -12,7 +12,12 @@
   "rules": {
     "prettier/prettier": "error",
     "react/react-in-jsx-scope": "off",
+    "react/state-in-constructor": "off",
     "react/prefer-stateless-function": "off",
+    "react/destructuring-assignment": "off",
+    "react/prop-types": "off",
+    "react/no-access-state-in-setstate": "off",
+    "no-nested-ternary": "off",
     "import/prefer-default-export": "off",
     "import/no-extraneous-dependencies": "off",
     "default-param-last": "off",

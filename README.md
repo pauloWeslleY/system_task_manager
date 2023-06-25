@@ -1,70 +1,45 @@
-# Getting Started with Create React App
+# Gerenciador de Tarefas
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Tema Dark
+![Imagem do Gerenciador de Tarefas com tema dark](./public/bannerDarkTheme.png)
+Tema Light
+![Imagem do Gerenciador de Tarefas com tema light](./public/bannerLightTheme.png)
 
-## Available Scripts
+## Executando a Aplicação Localmente
 
-In the project directory, you can run:
+Siga as instruções abaixo para executar a aplicação do Sistema de
+Gerenciamento de Tarefas localmente em seu computador.
 
-### `npm start`
+## Pré-requisitos
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+Node.js instalado (versão 12 ou superior)
+NPM (Node Package Manager) instalado
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Passo a Passo
 
-### `npm test`
+1. Clone o repositório para o seu computador usando o seguinte comando:
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+#### `git clone <URL do repositório>`
 
-### `npm run build`
+2. Acesse o diretório do projeto:
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+#### `cd task-manager`
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+3. Instale as dependências do projeto:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+#### `npm install`
 
-### `npm run eject`
+4. Execute a aplicação:
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+#### `npm start`
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+5. O servidor de desenvolvimento será iniciado e a aplicação estará disponível em seu navegador no endereço http://localhost:3000.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## Descrição
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+A Lista de tarefas é exibida na página inicial.
+Ao clicar em uma tarefa, ela será marcada como concluída e exibirá um estilo visual diferente.
+Você pode filtrar as tarefas por status (concluídas ou pendentes) usando os botões de filtro.
+As tarefas podem ser ordenadas por data de criação (mais recentes primeiro ou mais antigas primeiro).
+Para editar uma tarefa, clique no botão "Editar" ao lado da tarefa desejada. Um modal será exibido com os campos de título e descrição Faça as alterações desejadas e clique em "Salvar" para salvar as alterações ou "Cancelar" para fechar o modal sem salvar.
+Agora você pode executar a aplicação localmente e utilizar todas as funcionalidades do Sistema de Gerenciamento de Tarefas.
