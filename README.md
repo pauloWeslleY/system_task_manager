@@ -35,6 +35,15 @@ NPM (Node Package Manager) instalado
 
 5. O servidor de desenvolvimento será iniciado e a aplicação estará disponível em seu navegador no endereço http://localhost:3000.
 
+## Tecnologia utilizadas no desenvolvimento
+
+- ReactJs
+- Redux
+- Javascript
+- CSS3
+- Chakra-UI
+- Dayjs
+
 ## Descrição
 
 A Lista de tarefas é exibida na página inicial.
