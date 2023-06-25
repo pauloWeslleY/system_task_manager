@@ -1,21 +1,16 @@
-/* eslint-disable no-nested-ternary */
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import {
-  Checkbox,
   Flex,
   HStack,
   IconButton,
-  Input,
-  Select,
+  ButtonGroup,
   Stack,
-  Text,
   VStack,
-  chakra,
 } from '@chakra-ui/react'
-import { DeleteIcon } from '@chakra-ui/icons'
+import { CheckIcon, DeleteIcon, EditIcon } from '@chakra-ui/icons'
+import { MdCheckBoxOutlineBlank } from 'react-icons/md'
 import dayjs from 'dayjs'
-import 'dayjs/locale/pt-br' // Importando o idioma para o Day.js
 import {
   closeEditModal,
   onAddTask,
@@ -28,21 +23,31 @@ import {
   openEditModal,
 } from '../../store/actions'
 import { ButtonHero } from '../Buttons/ButtonHero'
+import { CardSelectHero } from '../CardSelectHero/CardSelectHero'
+import { TitleHero } from '../TitleHero/TitleHero'
+import { NavBar } from '../NavBar/NavBar'
+import { TaskItemHero } from './TaskItemHero'
+import { ModalTaskHero } from '../ModalTaskHero/ModalTaskHero'
+
+import 'dayjs/locale/pt-br' // Importando o idioma para o Day.js
+import { InputFieldHero } from '../InputFieldHero/InputFieldHero'
+import { SelectHero } from '../CardSelectHero/SelectHero'
 // Definindo o idioma padrão como português do Brasil
 dayjs.locale('pt-br')
 
-// Obtendo a data atual
-const currentDate = dayjs()
-
 class TaskList extends Component {
-  // eslint-disable-next-line react/state-in-constructor
-  state = {
-    taskTitle: '',
-    taskDescription: '',
+  constructor(props) {
+    super(props)
+    this.state = {
+      taskTitle: '',
+      taskDescription: '',
+    }
   }
 
   handleAddTask = () => {
     const { taskTitle, taskDescription } = this.state
+    // Obtendo a data atual
+    const currentDate = dayjs()
 
     if (taskTitle.trim() !== '') {
       const newTask = {
@@ -62,7 +67,16 @@ class TaskList extends Component {
   }
 
   handleUpdateTask = taskId => {
-    this.props.openEditModal(taskId)
+    const task = this.props.tasks.find(tasks => tasks.id === taskId)
+
+    if (task) {
+      this.setState({
+        editTitle: task.title,
+        editDescription: task.description,
+      })
+
+      this.props.openEditModal(taskId)
+    }
   }
 
   handleToggleTask = taskId => {
@@ -88,11 +102,15 @@ class TaskList extends Component {
   }
 
   handleModalSave = () => {
+    const { editedTaskId, editTitle, editDescription } = this.props
     const updatedTask = {
-      title: this.state.editTitle,
-      description: this.state.editDescription,
+      id: editedTaskId,
+      title: editTitle,
+      description: editDescription,
     }
-    this.props.editTask(this.props.editedTaskId, updatedTask)
+
+    this.props.editTask(updatedTask)
+    this.props.closeEditModal()
   }
 
   render() {
@@ -116,164 +134,102 @@ class TaskList extends Component {
 
     return (
       <Stack spacing={5}>
-        <Flex
-          align="center"
-          gap={3}
-          p={5}
-          bg="blackAlpha.600"
-          rounded="md"
-          shadow="md"
-          flexDir={['column', 'row']}
-        >
-          <Input
-            type="text"
+        <NavBar>
+          <InputFieldHero
             name="taskTitle"
             value={taskTitle}
             onChange={this.handleChange}
             placeholder="Digite sua tarefa de hoje"
-            _placeholder={{ opacity: 1, color: 'zinc.700' }}
-            variant="flushed"
-            p={1}
           />
-          <Input
-            type="text"
+          <InputFieldHero
             name="taskDescription"
             value={taskDescription}
             onChange={this.handleChange}
             placeholder="Digite a descrição da tarefa"
-            _placeholder={{ opacity: 1, color: 'zinc.700' }}
-            variant="flushed"
-            p={1}
           />
           <ButtonHero name="Adicionar Tarefa" onClick={this.handleAddTask} />
-        </Flex>
+        </NavBar>
 
         <HStack justify="center" align="center">
-          <Flex
-            flexDir={['column']}
-            w={['xl']}
-            align="center"
-            bg="blackAlpha.500"
-            p={5}
-            rounded="md"
-            shadow="md"
-          >
-            <Text as="h3" fontSize={['xl']}>
-              Filtra por tarefas completadas
-            </Text>
-            <Select
-              variant="flushed"
-              value={filter}
-              onChange={this.handleFilteredChange}
-            >
+          <CardSelectHero>
+            <TitleHero title="Filtra por tarefas completadas" />
+            <SelectHero value={filter} onChange={this.handleFilteredChange}>
               <option value="all">Todas</option>
               <option value="completed">Completas</option>
               <option value="pending">Pendente</option>
-            </Select>
-          </Flex>
-          <Flex
-            flexDir={['column']}
-            align="center"
-            w={['xl']}
-            bg="blackAlpha.500"
-            p={5}
-            rounded="md"
-            shadow="md"
-          >
-            <Text as="h3" fontSize={['xl']}>
-              Filtra por Data de criação
-            </Text>
-            <Select
-              variant="flushed"
-              value={sortOrder}
-              onChange={this.handleSortOrderChange}
-            >
+            </SelectHero>
+          </CardSelectHero>
+          <CardSelectHero>
+            <TitleHero title=" Filtra por Data de criação" />
+            <SelectHero value={sortOrder} onChange={this.handleSortOrderChange}>
               <option value="desc">Mais antigo</option>
               <option value="asc">Criado recentemente</option>
-            </Select>
-          </Flex>
+            </SelectHero>
+          </CardSelectHero>
         </HStack>
 
         <VStack my={5}>
           {sortedTasks.map(task => (
-            <Flex
-              key={task.id}
-              flexDir={['column', 'row']}
-              align="center"
-              justify="space-between"
-              gap={2}
-              rounded="md"
-              shadow="md"
-              w="full"
-              p={3}
-              bg={task.completed ? 'whiteAlpha.100' : 'blackAlpha.500'}
-            >
-              <Flex gap={2} align="center">
-                <Checkbox onChange={() => this.handleToggleTask(task.id)} />
-                <Flex
-                  flexDir="column"
-                  justify="space-around"
-                  textAlign={['center', 'left']}
-                >
-                  <Text fontSize={['2xl', '3xl']} fontWeight="medium">
-                    Titulo:{' '}
-                    <chakra.span color="violet.600">{task.title}</chakra.span>
-                  </Text>
-                  <Text as="span" fontWeight="regular" fontSize={['md']}>
-                    Descrição:{' '}
-                    <chakra.span color="violet.600">
-                      {task.description}
-                    </chakra.span>
-                  </Text>
-                  <Text as="span" fontWeight="light" fontSize={['xs']}>
-                    Data de criação:{' '}
-                    <chakra.span color="violet.600">{task.date}</chakra.span>
-                  </Text>
-                </Flex>
-              </Flex>
-              <Flex>
+            <TaskItemHero key={task.id} task={task}>
+              <ButtonGroup spacing={2}>
                 <IconButton
-                  variant="outline"
+                  variant="ghost"
                   colorScheme="green"
                   aria-label="Updated Task"
-                  icon={<DeleteIcon />}
+                  icon={
+                    task.completed ? <CheckIcon /> : <MdCheckBoxOutlineBlank />
+                  }
+                  onClick={() => this.handleToggleTask(task.id)}
+                />
+                <IconButton
+                  variant="ghost"
+                  colorScheme="blue"
+                  aria-label="Updated Task"
+                  icon={<EditIcon />}
                   onClick={() => this.handleUpdateTask(task.id)}
                 />
                 <IconButton
-                  variant="outline"
+                  variant="ghost"
                   colorScheme="red"
                   aria-label="Delete Task"
                   icon={<DeleteIcon />}
                   onClick={() => this.handleDeleteTask(task.id)}
                 />
-              </Flex>
-            </Flex>
+              </ButtonGroup>
+            </TaskItemHero>
           ))}
         </VStack>
 
+        {/* Modal de edição */}
         {editModalOpen && (
-          <div>
-            <div>
-              <div>Title:</div>
-              <input
-                type="text"
+          <ModalTaskHero>
+            <Flex flexDir={['column']} gap={3}>
+              <span>Tarefa:</span>
+              <InputFieldHero
+                placeholder="Digite sua tarefa de hoje"
                 value={this.state.editTitle}
                 onChange={e => this.setState({ editTitle: e.target.value })}
               />
-            </div>
-            <div>
-              <div>Description:</div>
-              <input
-                type="text"
+              <span>Descrição:</span>
+              <InputFieldHero
+                placeholder="Digite a descrição da tarefa"
                 value={this.state.editDescription}
                 onChange={e =>
                   this.setState({ editDescription: e.target.value })
                 }
               />
-            </div>
-            <ButtonHero name="Salvar Tarefa" onClick={this.handleModalSave} />
-            <ButtonHero name="Cancelar" onClick={this.handleModalClose} />
-          </div>
+            </Flex>
+
+            <Flex justify="center" my={5}>
+              <ButtonGroup spacing={1} w={['md']}>
+                <ButtonHero
+                  name="Salvar Tarefa"
+                  onClick={this.handleModalSave}
+                />
+                <ButtonHero name="Cancelar" onClick={this.handleModalClose} />
+              </ButtonGroup>
+            </Flex>
+          </ModalTaskHero>
         )}
       </Stack>
     )
@@ -296,7 +252,7 @@ const mapDispatchToProps = dispatch => ({
   setSortOrder: order => dispatch(onSetSortOrder(order)),
   openEditModal: taskId => dispatch(openEditModal(taskId)),
   closeEditModal: () => dispatch(closeEditModal()),
-  editTask: (taskId, updatedTask) => dispatch(onEditTask(taskId, updatedTask)),
+  editTask: updatedTask => dispatch(onEditTask(updatedTask)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(TaskList)

@@ -9,9 +9,9 @@ const onDeleteTask = taskId => ({
   payload: taskId,
 })
 // Action para atualizar uma tarefa
-const onEditTask = (taskId, updatedTask) => ({
+const onEditTask = updatedTask => ({
   type: 'UPDATE_TASK',
-  payload: { taskId, updatedTask },
+  payload: updatedTask,
 })
 // Action para marcar/desmarcar uma tarefa como concluída
 const onToggleTask = taskId => ({
