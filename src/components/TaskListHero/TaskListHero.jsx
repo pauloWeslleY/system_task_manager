@@ -1,47 +1,39 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import {
-  Flex,
-  HStack,
-  IconButton,
-  ButtonGroup,
-  Stack,
-  VStack,
-} from '@chakra-ui/react'
+import { Flex, HStack, VStack, IconButton } from '@chakra-ui/react'
 import { CheckIcon, DeleteIcon, EditIcon } from '@chakra-ui/icons'
 import { MdCheckBoxOutlineBlank } from 'react-icons/md'
 import dayjs from 'dayjs'
-import {
-  closeEditModal,
-  onAddTask,
-  onDeleteTask,
-  onEditTask,
-  onSetFilter,
-  onSetSortOrder,
-  onToggleTask,
-  // onUpdateTask,
-  openEditModal,
-} from '../../store/actions'
 import { ButtonHero } from '../Buttons/ButtonHero'
 import { CardSelectHero } from '../CardSelectHero/CardSelectHero'
 import { TitleHero } from '../TitleHero/TitleHero'
 import { NavBar } from '../NavBar/NavBar'
 import { TaskItemHero } from './TaskItemHero'
 import { ModalTaskHero } from '../ModalTaskHero/ModalTaskHero'
-
-import 'dayjs/locale/pt-br' // Importando o idioma para o Day.js
 import { InputFieldHero } from '../InputFieldHero/InputFieldHero'
 import { SelectHero } from '../CardSelectHero/SelectHero'
+import { TaskContainer } from '../TaskContainer/TaskContainer'
+import { BtnGroupHero } from '../Buttons/BtnGroupHero'
+import {
+  closeEditModal,
+  onAddTask,
+  onDeleteTask,
+  onUpdateTask,
+  onSetFilter,
+  onSortByCreationDate,
+  onToggleTask,
+  openEditModal,
+} from '../../store/actions'
+// Importando o idioma para o Day.js
+import 'dayjs/locale/pt-br'
+
 // Definindo o idioma padrão como português do Brasil
 dayjs.locale('pt-br')
 
 class TaskList extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      taskTitle: '',
-      taskDescription: '',
-    }
+  state = {
+    taskTitle: '',
+    taskDescription: '',
   }
 
   handleAddTask = () => {
@@ -57,30 +49,29 @@ class TaskList extends Component {
         completed: false,
         date: currentDate.format('DD/MM/YYYY'),
       }
-      this.props.addTask(newTask)
+      this.props.onAddTask(newTask)
       this.setState({ taskTitle: '', taskDescription: '' })
     }
   }
 
   handleDeleteTask = taskId => {
-    this.props.deleteTask(taskId)
+    this.props.onDeleteTask(taskId)
   }
 
   handleUpdateTask = taskId => {
-    const task = this.props.tasks.find(tasks => tasks.id === taskId)
+    this.props.openEditModal(taskId)
+  }
 
-    if (task) {
-      this.setState({
-        editTitle: task.title,
-        editDescription: task.description,
-      })
-
-      this.props.openEditModal(taskId)
+  handleModalSave = () => {
+    const updatedTask = {
+      title: this.state.editTitle,
+      description: this.state.editDescription,
     }
+    this.props.onUpdateTask(this.props.updatedTaskId, updatedTask)
   }
 
   handleToggleTask = taskId => {
-    this.props.toggleTask(taskId)
+    this.props.onToggleTask(taskId)
   }
 
   handleChange = e => {
@@ -89,27 +80,15 @@ class TaskList extends Component {
 
   handleFilteredChange = e => {
     const filter = e.target.value
-    this.props.setFilter(filter)
+    this.props.onSetFilter(filter)
   }
 
-  handleSortOrderChange = e => {
+  handleSortByCreationDate = e => {
     const sortOrder = e.target.value
-    this.props.setSortOrder(sortOrder)
+    this.props.onSortByCreationDate(sortOrder)
   }
 
   handleModalClose = () => {
-    this.props.closeEditModal()
-  }
-
-  handleModalSave = () => {
-    const { editedTaskId, editTitle, editDescription } = this.props
-    const updatedTask = {
-      id: editedTaskId,
-      title: editTitle,
-      description: editDescription,
-    }
-
-    this.props.editTask(updatedTask)
     this.props.closeEditModal()
   }
 
@@ -124,7 +103,7 @@ class TaskList extends Component {
         ? tasks.filter(task => !task.completed)
         : tasks
 
-    // Ordenar as tarefas com base na ordem de classificação atual
+    // Ordenar as tarefas com base na data de criação
     const sortedTasks =
       sortOrder === 'desc'
         ? filteredTasks.sort((a, b) => b.id - a.id)
@@ -133,7 +112,7 @@ class TaskList extends Component {
         : filteredTasks
 
     return (
-      <Stack spacing={5}>
+      <TaskContainer>
         <NavBar>
           <InputFieldHero
             name="taskTitle"
@@ -161,7 +140,10 @@ class TaskList extends Component {
           </CardSelectHero>
           <CardSelectHero>
             <TitleHero title=" Filtra por Data de criação" />
-            <SelectHero value={sortOrder} onChange={this.handleSortOrderChange}>
+            <SelectHero
+              value={sortOrder}
+              onChange={this.handleSortByCreationDate}
+            >
               <option value="desc">Mais antigo</option>
               <option value="asc">Criado recentemente</option>
             </SelectHero>
@@ -171,31 +153,29 @@ class TaskList extends Component {
         <VStack my={5}>
           {sortedTasks.map(task => (
             <TaskItemHero key={task.id} task={task}>
-              <ButtonGroup spacing={2}>
-                <IconButton
-                  variant="ghost"
-                  colorScheme="green"
-                  aria-label="Updated Task"
-                  icon={
-                    task.completed ? <CheckIcon /> : <MdCheckBoxOutlineBlank />
-                  }
-                  onClick={() => this.handleToggleTask(task.id)}
-                />
-                <IconButton
-                  variant="ghost"
-                  colorScheme="blue"
-                  aria-label="Updated Task"
-                  icon={<EditIcon />}
-                  onClick={() => this.handleUpdateTask(task.id)}
-                />
-                <IconButton
-                  variant="ghost"
-                  colorScheme="red"
-                  aria-label="Delete Task"
-                  icon={<DeleteIcon />}
-                  onClick={() => this.handleDeleteTask(task.id)}
-                />
-              </ButtonGroup>
+              <IconButton
+                variant="ghost"
+                colorScheme="green"
+                aria-label="Completed Task"
+                icon={
+                  task.completed ? <CheckIcon /> : <MdCheckBoxOutlineBlank />
+                }
+                onClick={() => this.handleToggleTask(task.id)}
+              />
+              <IconButton
+                variant="ghost"
+                colorScheme="blue"
+                aria-label="Updated Task"
+                icon={<EditIcon />}
+                onClick={() => this.handleUpdateTask(task.id)}
+              />
+              <IconButton
+                variant="ghost"
+                colorScheme="red"
+                aria-label="Delete Task"
+                icon={<DeleteIcon />}
+                onClick={() => this.handleDeleteTask(task.id)}
+              />
             </TaskItemHero>
           ))}
         </VStack>
@@ -207,31 +187,26 @@ class TaskList extends Component {
               <span>Tarefa:</span>
               <InputFieldHero
                 placeholder="Digite sua tarefa de hoje"
-                value={this.state.editTitle}
+                value={this.state.title}
                 onChange={e => this.setState({ editTitle: e.target.value })}
               />
               <span>Descrição:</span>
               <InputFieldHero
                 placeholder="Digite a descrição da tarefa"
-                value={this.state.editDescription}
+                value={this.state.description}
                 onChange={e =>
                   this.setState({ editDescription: e.target.value })
                 }
               />
             </Flex>
 
-            <Flex justify="center" my={5}>
-              <ButtonGroup spacing={1} w={['md']}>
-                <ButtonHero
-                  name="Salvar Tarefa"
-                  onClick={this.handleModalSave}
-                />
-                <ButtonHero name="Cancelar" onClick={this.handleModalClose} />
-              </ButtonGroup>
-            </Flex>
+            <BtnGroupHero>
+              <ButtonHero name="Salvar Tarefa" onClick={this.handleModalSave} />
+              <ButtonHero name="Fechar" onClick={this.handleModalClose} />
+            </BtnGroupHero>
           </ModalTaskHero>
         )}
-      </Stack>
+      </TaskContainer>
     )
   }
 }
@@ -241,18 +216,19 @@ const mapStateToProps = state => ({
   filter: state.filter,
   sortOrder: state.sortOrder,
   editModalOpen: state.editModalOpen,
-  editedTaskId: state.editedTaskId,
+  updatedTaskId: state.updatedTaskId,
 })
 
 const mapDispatchToProps = dispatch => ({
-  addTask: task => dispatch(onAddTask(task)),
-  deleteTask: taskId => dispatch(onDeleteTask(taskId)),
-  toggleTask: taskId => dispatch(onToggleTask(taskId)),
-  setFilter: filter => dispatch(onSetFilter(filter)),
-  setSortOrder: order => dispatch(onSetSortOrder(order)),
+  onAddTask: task => dispatch(onAddTask(task)),
+  onDeleteTask: taskId => dispatch(onDeleteTask(taskId)),
+  onToggleTask: taskId => dispatch(onToggleTask(taskId)),
+  onSetFilter: filter => dispatch(onSetFilter(filter)),
+  onSortByCreationDate: order => dispatch(onSortByCreationDate(order)),
+  onUpdateTask: (taskId, updatedTask) =>
+    dispatch(onUpdateTask(taskId, updatedTask)),
   openEditModal: taskId => dispatch(openEditModal(taskId)),
   closeEditModal: () => dispatch(closeEditModal()),
-  editTask: updatedTask => dispatch(onEditTask(updatedTask)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(TaskList)

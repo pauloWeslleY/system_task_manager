@@ -3,7 +3,7 @@ const initialState = {
   filter: 'all',
   sortOrder: 'desc',
   editModalOpen: false,
-  editedTaskId: null,
+  updatedTaskId: null,
 }
 
 export const reducer = (state = initialState, action) => {
@@ -27,7 +27,19 @@ export const reducer = (state = initialState, action) => {
             : task
         ),
         editModalOpen: false,
-        editedTaskId: null,
+        updatedTaskId: null,
+      }
+    case 'OPEN_EDIT_MODAL':
+      return {
+        ...state,
+        editModalOpen: true,
+        updatedTaskId: action.payload,
+      }
+    case 'CLOSE_EDIT_MODAL':
+      return {
+        ...state,
+        editModalOpen: false,
+        updatedTaskId: null,
       }
     case 'TOGGLE_TASK':
       return {
@@ -48,18 +60,7 @@ export const reducer = (state = initialState, action) => {
         ...state,
         sortOrder: action.payload,
       }
-    case 'OPEN_EDIT_MODAL':
-      return {
-        ...state,
-        editModalOpen: true,
-        editedTaskId: action.payload,
-      }
-    case 'CLOSE_EDIT_MODAL':
-      return {
-        ...state,
-        editModalOpen: false,
-        editedTaskId: null,
-      }
+
     default:
       return state
   }

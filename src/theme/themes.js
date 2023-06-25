@@ -12,7 +12,7 @@ export const theme = extendTheme({
   styles: {
     global: props => ({
       body: {
-        bg: mode('gray.300', 'zinc.800')(props),
+        bg: mode('gray.300', 'zinc.900')(props),
         color: mode('blackAlpha.900', 'whiteAlpha.900')(props),
         fontFamily: '"Poppins", sans-serif',
       },
