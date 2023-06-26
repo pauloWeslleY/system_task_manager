@@ -1,9 +1,9 @@
 # Gerenciador de Tarefas
 
 Tema Dark
-![Imagem do Gerenciador de Tarefas com tema dark](./public/bannerDarkTheme.png)
+![Imagem do Gerenciador de Tarefas com tema dark](./public/darkThemeBanner.png)
 Tema Light
-![Imagem do Gerenciador de Tarefas com tema light](./public/bannerLightTheme.png)
+![Imagem do Gerenciador de Tarefas com tema light](./public/lightThemeBanner.png)
 
 ## Executando a Aplicação Localmente
 
