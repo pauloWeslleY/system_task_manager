@@ -16,7 +16,14 @@ export class App extends Component {
           mt={5}
           mb={8}
         >
-          <Heading fontWeight="semibold" fontFamily="DMSans">
+          <Heading
+            fontWeight="semibold"
+            fontFamily="Poppins"
+            letterSpacing="wide"
+            textTransform="uppercase"
+            bgClip="text"
+            bgGradient="linear(to-r, emerald.500,violet.600)"
+          >
             Gerenciador de Tarefas
           </Heading>
           <ButtonToggle />

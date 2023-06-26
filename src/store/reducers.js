@@ -50,12 +50,12 @@ export const reducer = (state = initialState, action) => {
             : task
         ),
       }
-    case 'SET_FILTER':
+    case 'SET_FILTER_TASK':
       return {
         ...state,
         filter: action.payload,
       }
-    case 'SET_SORT_ORDER':
+    case 'SET_TASK_ORDER':
       return {
         ...state,
         sortOrder: action.payload,

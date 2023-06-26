@@ -1,12 +1,14 @@
 import { Button, useColorModeValue } from '@chakra-ui/react'
 
 export function ButtonHero({ name, onClick }) {
-  const THEME_COLORS = useColorModeValue('purple.500', 'violet.400')
+  const THEME = {
+    BUTTON_COLORS: useColorModeValue('purple.300', 'violet.600'),
+  }
 
   return (
     <Button
       type="button"
-      bg={THEME_COLORS}
+      bg={THEME.BUTTON_COLORS}
       px={8}
       color="violet.100"
       rounded="md"
