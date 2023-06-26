@@ -10,7 +10,7 @@ export function TaskItemHero({ task, children }) {
   const THEME = {
     TASK_COLORS_TITLE: useColorModeValue('zinc.700', 'whiteAlpha.900'),
     TASK_COLORS_TITLE_COMPLETED: useColorModeValue('zinc.800', 'zinc.950'),
-    TASK_COLORS_SPAN: useColorModeValue('purple.700', 'violet.600'),
+    TASK_COLORS_SPAN: useColorModeValue('violet.700', 'violet.600'),
     TASK_COLORS_SPAN_COMPLETED: useColorModeValue('green.800', 'emerald.900'),
     TASK_COLORS_CARD: useColorModeValue('violet.100', 'blackAlpha.500'),
     TASK_COLORS_CARD_COMPLETED: useColorModeValue('green.300', 'emerald.500'),

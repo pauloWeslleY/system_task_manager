@@ -15,6 +15,8 @@ import { SelectHero } from '../CardSelectHero/SelectHero'
 import { TaskContainer } from '../TaskContainer/TaskContainer'
 import { BtnGroupHero } from '../Buttons/BtnGroupHero'
 import { TaskHeroBox } from '../TaskContainer/TaskHeroBox'
+import { ButtonIcon } from '../Buttons/ButtonIcon'
+import { InputTextLabel } from '../InputFieldHero/InputTextLabel'
 import {
   closeEditModal,
   onAddTask,
@@ -27,8 +29,6 @@ import {
 } from '../../store/actions'
 // Importando o idioma para o Day.js
 import 'dayjs/locale/pt-br'
-import { ButtonIcon } from '../Buttons/ButtonIcon'
-import { InputTextLabel } from '../InputFieldHero/InputTextLabel'
 
 // Definindo o idioma padrão como português do Brasil
 dayjs.locale('pt-br')
@@ -91,7 +91,7 @@ class TaskList extends Component {
         title: taskTitle,
         description: taskDescription,
         completed: false,
-        date: currentDate.format('DD/MM/YYYY'),
+        date: currentDate.format('D [de] MMMM [de] YYYY [às] HH:mm:ss'),
       }
       this.props.onAddTask(newTask)
       // Limpar o formulário depois de adicionar uma nova tarefa
@@ -248,8 +248,8 @@ class TaskList extends Component {
               value={sortOrder}
               onChange={this.handleTasksOrderByCreationDate}
             >
-              <option value="desc">Mais antigo</option>
-              <option value="asc">Criado recentemente</option>
+              <option value="asc">Mais antigo</option>
+              <option value="desc">Criado recentemente</option>
             </SelectHero>
           </CardSelectHero>
         </HStack>
