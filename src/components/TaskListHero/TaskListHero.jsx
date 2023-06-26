@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Flex, HStack, VStack, IconButton } from '@chakra-ui/react'
+import { Flex, HStack, VStack } from '@chakra-ui/react'
 import { CheckIcon, DeleteIcon, EditIcon } from '@chakra-ui/icons'
 import { MdCheckBoxOutlineBlank } from 'react-icons/md'
 import dayjs from 'dayjs'
@@ -14,34 +14,78 @@ import { InputFieldHero } from '../InputFieldHero/InputFieldHero'
 import { SelectHero } from '../CardSelectHero/SelectHero'
 import { TaskContainer } from '../TaskContainer/TaskContainer'
 import { BtnGroupHero } from '../Buttons/BtnGroupHero'
+import { TaskHeroBox } from '../TaskContainer/TaskHeroBox'
 import {
   closeEditModal,
   onAddTask,
   onDeleteTask,
   onUpdateTask,
-  onSetFilter,
-  onSortByCreationDate,
+  onSetFilteredTask,
+  onTasksOrderByCreationDate,
   onToggleTask,
   openEditModal,
 } from '../../store/actions'
 // Importando o idioma para o Day.js
 import 'dayjs/locale/pt-br'
+import { ButtonIcon } from '../Buttons/ButtonIcon'
+import { InputTextLabel } from '../InputFieldHero/InputTextLabel'
 
 // Definindo o idioma padrão como português do Brasil
 dayjs.locale('pt-br')
 
 class TaskList extends Component {
-  state = {
-    taskTitle: '',
-    taskDescription: '',
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      newTasks: {
+        taskTitle: '',
+        taskDescription: '',
+      },
+      formErrors: {
+        taskTitle: '',
+        taskDescription: '',
+      },
+    }
   }
 
+  /**
+   * @método para validar os campos do formulário
+   */
+  handleFormValidate = () => {
+    const { taskTitle, taskDescription } = this.state.newTasks
+    let formIsValid = true
+    const errors = {
+      title: '',
+      description: '',
+    }
+
+    if (taskTitle.trim() === '') {
+      formIsValid = false
+      errors.title = 'O título é obrigatório.'
+    }
+
+    if (taskDescription.trim() === '') {
+      formIsValid = false
+      errors.description = 'A descrição é obrigatória.'
+    }
+
+    this.setState({
+      formErrors: errors,
+    })
+
+    return formIsValid
+  }
+
+  /**
+   * @método para adicionar a tarefa
+   */
   handleAddTask = () => {
-    const { taskTitle, taskDescription } = this.state
+    const { taskTitle, taskDescription } = this.state.newTasks
     // Obtendo a data atual
     const currentDate = dayjs()
 
-    if (taskTitle.trim() !== '') {
+    if (this.handleFormValidate()) {
       const newTask = {
         id: Date.now(),
         title: taskTitle,
@@ -50,18 +94,38 @@ class TaskList extends Component {
         date: currentDate.format('DD/MM/YYYY'),
       }
       this.props.onAddTask(newTask)
-      this.setState({ taskTitle: '', taskDescription: '' })
+      // Limpar o formulário depois de adicionar uma nova tarefa
+      this.setState({
+        newTasks: {
+          taskTitle: '',
+          taskDescription: '',
+        },
+        formErrors: {
+          title: '',
+          description: '',
+        },
+      })
     }
   }
 
+  /**
+   * @método que excluir a tarefas por ID
+   */
   handleDeleteTask = taskId => {
     this.props.onDeleteTask(taskId)
   }
 
+  /**
+   * @método que atualiza as tarefas por ID
+   */
   handleUpdateTask = taskId => {
     this.props.openEditModal(taskId)
   }
 
+  /**
+   * @método que salva as informações do modal e atualiza os
+   * atributos taskTitle e taskDescription
+   */
   handleModalSave = () => {
     const updatedTask = {
       title: this.state.editTitle,
@@ -70,32 +134,58 @@ class TaskList extends Component {
     this.props.onUpdateTask(this.props.updatedTaskId, updatedTask)
   }
 
-  handleToggleTask = taskId => {
+  /**
+   * @método que alterna as tarefas completadas e pendentes
+   */
+  handleToggleTasks = taskId => {
     this.props.onToggleTask(taskId)
   }
 
-  handleChange = e => {
-    this.setState({ [e.target.name]: e.target.value })
+  /**
+   * @Método que atualizar os atributo: taskTitle e taskDescription
+   */
+  handleInputTitleAndDescriptionChange = event => {
+    const { name, value } = event.target
+
+    this.setState(
+      prevState => ({
+        newTasks: {
+          ...prevState.newTasks,
+          [name]: value,
+        },
+      }),
+      this.handleFormValidate
+    )
   }
 
-  handleFilteredChange = e => {
+  /**
+   * @Método para filtrar as tarefas completas ou pendentes
+   */
+  handleFilteredTasksChange = e => {
     const filter = e.target.value
-    this.props.onSetFilter(filter)
+    this.props.onSetFilteredTask(filter)
   }
 
-  handleSortByCreationDate = e => {
+  /**
+   * @Método para ordenar as tarefas por data de criação
+   */
+  handleTasksOrderByCreationDate = e => {
     const sortOrder = e.target.value
-    this.props.onSortByCreationDate(sortOrder)
+    this.props.onTasksOrderByCreationDate(sortOrder)
   }
 
+  /**
+   * @Método para fechar o Modal
+   */
   handleModalClose = () => {
     this.props.closeEditModal()
   }
 
   render() {
     const { tasks, filter, sortOrder, editModalOpen } = this.props
-    const { taskTitle, taskDescription } = this.state
-    // Filtrar as tarefas com base no filtro atual
+    const { newTasks, formErrors } = this.state
+
+    // Estrutura condicional para filtrar as tarefas com base no filtro atual
     const filteredTasks =
       filter === 'completed'
         ? tasks.filter(task => task.completed)
@@ -103,7 +193,7 @@ class TaskList extends Component {
         ? tasks.filter(task => !task.completed)
         : tasks
 
-    // Ordenar as tarefas com base na data de criação
+    // Estrutura condicional que ordenar as tarefas com base na data de criação
     const sortedTasks =
       sortOrder === 'desc'
         ? filteredTasks.sort((a, b) => b.id - a.id)
@@ -114,25 +204,39 @@ class TaskList extends Component {
     return (
       <TaskContainer>
         <NavBar>
-          <InputFieldHero
-            name="taskTitle"
-            value={taskTitle}
-            onChange={this.handleChange}
-            placeholder="Digite sua tarefa de hoje"
-          />
-          <InputFieldHero
-            name="taskDescription"
-            value={taskDescription}
-            onChange={this.handleChange}
-            placeholder="Digite a descrição da tarefa"
-          />
+          <TaskHeroBox>
+            <InputFieldHero
+              name="taskTitle"
+              value={newTasks.taskTitle}
+              onChange={this.handleInputTitleAndDescriptionChange}
+              placeholder="Digite sua tarefa"
+            />
+            {formErrors.title && (
+              <InputTextLabel>{formErrors.title}</InputTextLabel>
+            )}
+          </TaskHeroBox>
+
+          <TaskHeroBox>
+            <InputFieldHero
+              name="taskDescription"
+              value={newTasks.taskDescription}
+              onChange={this.handleInputTitleAndDescriptionChange}
+              placeholder="Digite a descrição da tarefa"
+            />
+            {formErrors.description && (
+              <InputTextLabel>{formErrors.description}</InputTextLabel>
+            )}
+          </TaskHeroBox>
           <ButtonHero name="Adicionar Tarefa" onClick={this.handleAddTask} />
         </NavBar>
 
         <HStack justify="center" align="center">
           <CardSelectHero>
             <TitleHero title="Filtra por tarefas completadas" />
-            <SelectHero value={filter} onChange={this.handleFilteredChange}>
+            <SelectHero
+              value={filter}
+              onChange={this.handleFilteredTasksChange}
+            >
               <option value="all">Todas</option>
               <option value="completed">Completas</option>
               <option value="pending">Pendente</option>
@@ -142,7 +246,7 @@ class TaskList extends Component {
             <TitleHero title=" Filtra por Data de criação" />
             <SelectHero
               value={sortOrder}
-              onChange={this.handleSortByCreationDate}
+              onChange={this.handleTasksOrderByCreationDate}
             >
               <option value="desc">Mais antigo</option>
               <option value="asc">Criado recentemente</option>
@@ -153,28 +257,25 @@ class TaskList extends Component {
         <VStack my={5}>
           {sortedTasks.map(task => (
             <TaskItemHero key={task.id} task={task}>
-              <IconButton
-                variant="ghost"
-                colorScheme="green"
-                aria-label="Completed Task"
+              <ButtonIcon
+                label="Completed Task"
                 icon={
                   task.completed ? <CheckIcon /> : <MdCheckBoxOutlineBlank />
                 }
-                onClick={() => this.handleToggleTask(task.id)}
+                onClick={() => this.handleToggleTasks(task.id)}
+                color="green.600"
               />
-              <IconButton
-                variant="ghost"
-                colorScheme="blue"
-                aria-label="Updated Task"
+              <ButtonIcon
+                label="Updated Task"
                 icon={<EditIcon />}
                 onClick={() => this.handleUpdateTask(task.id)}
+                color="blue.600"
               />
-              <IconButton
-                variant="ghost"
-                colorScheme="red"
-                aria-label="Delete Task"
+              <ButtonIcon
+                label="Delete Task"
                 icon={<DeleteIcon />}
                 onClick={() => this.handleDeleteTask(task.id)}
+                color="red.600"
               />
             </TaskItemHero>
           ))}
@@ -223,8 +324,9 @@ const mapDispatchToProps = dispatch => ({
   onAddTask: task => dispatch(onAddTask(task)),
   onDeleteTask: taskId => dispatch(onDeleteTask(taskId)),
   onToggleTask: taskId => dispatch(onToggleTask(taskId)),
-  onSetFilter: filter => dispatch(onSetFilter(filter)),
-  onSortByCreationDate: order => dispatch(onSortByCreationDate(order)),
+  onSetFilteredTask: filter => dispatch(onSetFilteredTask(filter)),
+  onTasksOrderByCreationDate: order =>
+    dispatch(onTasksOrderByCreationDate(order)),
   onUpdateTask: (taskId, updatedTask) =>
     dispatch(onUpdateTask(taskId, updatedTask)),
   openEditModal: taskId => dispatch(openEditModal(taskId)),

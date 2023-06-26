@@ -8,11 +8,11 @@ import {
 
 export function TaskItemHero({ task, children }) {
   const THEME = {
-    TASK_COLORS_TITLE: useColorModeValue('violet.100', 'whiteAlpha.900'),
-    TASK_COLORS_TITLE_COMPLETED: useColorModeValue('gray.600', 'zinc.800'),
-    TASK_COLORS_SPAN: useColorModeValue('violet.100', 'violet.600'),
-    TASK_COLORS_SPAN_COMPLETED: useColorModeValue('gray.600', 'emerald.900'),
-    TASK_COLORS_CARD: useColorModeValue('purple.300', 'blackAlpha.500'),
+    TASK_COLORS_TITLE: useColorModeValue('zinc.700', 'whiteAlpha.900'),
+    TASK_COLORS_TITLE_COMPLETED: useColorModeValue('zinc.800', 'zinc.950'),
+    TASK_COLORS_SPAN: useColorModeValue('purple.700', 'violet.600'),
+    TASK_COLORS_SPAN_COMPLETED: useColorModeValue('green.800', 'emerald.900'),
+    TASK_COLORS_CARD: useColorModeValue('violet.100', 'blackAlpha.500'),
     TASK_COLORS_CARD_COMPLETED: useColorModeValue('green.300', 'emerald.500'),
   }
 
@@ -39,7 +39,7 @@ export function TaskItemHero({ task, children }) {
       >
         <Text
           fontSize={['2xl', '3xl']}
-          fontWeight="medium"
+          fontWeight="semibold"
           color={
             task.completed
               ? THEME.TASK_COLORS_TITLE_COMPLETED
@@ -59,7 +59,7 @@ export function TaskItemHero({ task, children }) {
         </Text>
         <Text
           as="span"
-          fontWeight="regular"
+          fontWeight="medium"
           fontSize={['md']}
           color={
             task.completed
@@ -80,7 +80,7 @@ export function TaskItemHero({ task, children }) {
         </Text>
         <Text
           as="span"
-          fontWeight="light"
+          fontWeight="medium"
           fontSize={['xs']}
           color={
             task.completed

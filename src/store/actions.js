@@ -22,21 +22,25 @@ const onToggleTask = taskId => ({
   payload: taskId,
 })
 
-const onSetFilter = filter => ({
-  type: 'SET_FILTER',
+// Action para filtrar uma tarefa como completada ou pendente
+const onSetFilteredTask = filter => ({
+  type: 'SET_FILTER_TASK',
   payload: filter,
 })
 
-const onSortByCreationDate = order => ({
-  type: 'SET_SORT_ORDER',
+// Action para ordenar uma tarefa por data de criação
+const onTasksOrderByCreationDate = order => ({
+  type: 'SET_TASK_ORDER',
   payload: order,
 })
 
+// Action para editar Modal
 const openEditModal = taskId => ({
   type: 'OPEN_EDIT_MODAL',
   payload: taskId,
 })
 
+// Action para fechar Modal
 const closeEditModal = () => ({
   type: 'CLOSE_EDIT_MODAL',
 })
@@ -46,8 +50,8 @@ export {
   onUpdateTask,
   onDeleteTask,
   onToggleTask,
-  onSetFilter,
-  onSortByCreationDate,
+  onSetFilteredTask,
+  onTasksOrderByCreationDate,
   openEditModal,
   closeEditModal,
 }
