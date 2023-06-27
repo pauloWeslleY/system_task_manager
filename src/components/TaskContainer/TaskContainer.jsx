@@ -1,5 +1,8 @@
+import React, { Component } from 'react'
 import { Stack } from '@chakra-ui/react'
 
-export function TaskContainer({ children }) {
-  return <Stack spacing={5}>{children}</Stack>
+export class TaskContainer extends Component {
+  render() {
+    return <Stack spacing={5}>{this.props.children}</Stack>
+  }
 }
