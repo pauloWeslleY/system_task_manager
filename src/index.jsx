@@ -1,23 +1,22 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
+import dayjs from 'dayjs'
 import { Provider } from 'react-redux'
-import { createStore } from 'redux'
-import { ChakraProvider, ColorModeScript } from '@chakra-ui/react'
 import { App } from './App'
-import { theme } from './theme/themes'
-import { reducer } from './store/reducers'
+import { ThemeProvider } from './theme/themes'
+import store from './store'
+import 'dayjs/locale/pt-br'
 import './styles/global.css'
 
-const store = createStore(reducer)
+dayjs.locale('pt-br')
 const root = document.getElementById('root')
 
 ReactDOM.createRoot(root).render(
   <React.StrictMode>
-    <ChakraProvider theme={theme}>
-      <ColorModeScript initialColorMode={theme.config.initialColorMode} />
-      <Provider store={store}>
+    <Provider store={store}>
+      <ThemeProvider>
         <App />
-      </Provider>
-    </ChakraProvider>
+      </ThemeProvider>
+    </Provider>
   </React.StrictMode>
 )

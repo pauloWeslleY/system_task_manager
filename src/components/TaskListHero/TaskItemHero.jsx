@@ -5,8 +5,13 @@ import {
   chakra,
   useColorModeValue,
 } from '@chakra-ui/react'
+import { CheckIcon, DeleteIcon, EditIcon } from '@chakra-ui/icons'
+import { MdCheckBoxOutlineBlank } from 'react-icons/md'
+import { connect } from 'react-redux'
+import { ButtonIcon } from '../Buttons/ButtonIcon'
+import { TaskActions } from '../../store/actions'
 
-export function TaskItemHero({ task, children }) {
+function TaskItemHero({ task, toggleTask, onDeleteTask, openEditModal }) {
   const THEME = {
     TASK_COLORS_TITLE: useColorModeValue('zinc.700', 'whiteAlpha.900'),
     TASK_COLORS_TITLE_COMPLETED: useColorModeValue('zinc.800', 'zinc.950'),
@@ -101,7 +106,36 @@ export function TaskItemHero({ task, children }) {
         </Text>
       </Flex>
 
-      <ButtonGroup spacing={2}>{children}</ButtonGroup>
+      <ButtonGroup spacing={2}>
+        <ButtonIcon
+          label="Completed Task"
+          icon={task.completed ? <CheckIcon /> : <MdCheckBoxOutlineBlank />}
+          onClick={() => toggleTask(task.id)}
+          color="green.600"
+        />
+        <ButtonIcon
+          label="Updated Task"
+          icon={<EditIcon />}
+          onClick={() => openEditModal(true)}
+          color="blue.600"
+        />
+        <ButtonIcon
+          label="Delete Task"
+          icon={<DeleteIcon />}
+          onClick={() => onDeleteTask(task.id)}
+          color="red.600"
+        />
+      </ButtonGroup>
     </Flex>
   )
 }
+
+const mapStateToProps = state => ({ ...state })
+
+const mapDispatchToProps = dispatch => ({
+  openModalTaskEdit: open => dispatch(TaskActions.openModalTaskEdit(open)),
+  deleteTask: taskId => dispatch(TaskActions.deleteTask(taskId)),
+  toggleTask: taskId => dispatch(TaskActions.toggleTask(taskId)),
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(TaskItemHero)

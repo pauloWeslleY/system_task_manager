@@ -1,57 +1,40 @@
-// Action para adicionar uma nova tarefa
-const onAddTask = task => ({
-  type: 'ADD_TASK',
-  payload: task,
-})
+export const TASK = {
+  ADD: 'ADD_TASK',
+  DELETE: 'DELETE_TASK',
+  UPDATE: 'UPDATE_TASK',
+  TOGGLE: 'TOGGLE_TASK',
+  FILTERED: 'FILTERED',
+  ORDER: 'ORDER',
+  OPEN_EDIT_MODAL: 'OPEN_EDIT_MODAL',
+}
 
-// Action para excluir uma tarefa
-const onDeleteTask = taskId => ({
-  type: 'DELETE_TASK',
-  payload: taskId,
-})
-
-// Action para atualizar uma tarefa
-const onUpdateTask = (taskId, updatedTask) => ({
-  type: 'UPDATE_TASK',
-  payload: { taskId, updatedTask },
-})
-
-// Action para marcar/desmarcar uma tarefa como concluída
-const onToggleTask = taskId => ({
-  type: 'TOGGLE_TASK',
-  payload: taskId,
-})
-
-// Action para filtrar uma tarefa como completada ou pendente
-const onSetFilteredTask = filter => ({
-  type: 'SET_FILTER_TASK',
-  payload: filter,
-})
-
-// Action para ordenar uma tarefa por data de criação
-const onTasksOrderByCreationDate = order => ({
-  type: 'SET_TASK_ORDER',
-  payload: order,
-})
-
-// Action para editar Modal
-const openEditModal = taskId => ({
-  type: 'OPEN_EDIT_MODAL',
-  payload: taskId,
-})
-
-// Action para fechar Modal
-const closeEditModal = () => ({
-  type: 'CLOSE_EDIT_MODAL',
-})
-
-export {
-  onAddTask,
-  onUpdateTask,
-  onDeleteTask,
-  onToggleTask,
-  onSetFilteredTask,
-  onTasksOrderByCreationDate,
-  openEditModal,
-  closeEditModal,
+export const TaskActions = {
+  addTask: task => ({
+    type: TASK.ADD,
+    payload: task,
+  }),
+  deleteTask: taskId => ({
+    type: TASK.DELETE,
+    payload: taskId,
+  }),
+  updateTask: (taskId, updatedTask) => ({
+    type: TASK.UPDATE,
+    payload: { taskId, updatedTask },
+  }),
+  toggleTask: taskId => ({
+    type: TASK.TOGGLE,
+    payload: taskId,
+  }),
+  filteredTask: filter => ({
+    type: TASK.FILTERED,
+    payload: filter,
+  }),
+  orderTask: order => ({
+    type: TASK.ORDER,
+    payload: order,
+  }),
+  openModalTaskEdit: open => ({
+    type: TASK.OPEN_EDIT_MODAL,
+    payload: open,
+  }),
 }

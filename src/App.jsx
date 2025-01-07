@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import { Container, Flex, Heading } from '@chakra-ui/react'
 import { ButtonToggle } from './components/Buttons/ButtonToggle'
 import TaskListHero from './components/TaskListHero/TaskListHero'
+import AddTask from './components/AddTask'
+import FilterTask from './components/FilterTask'
 
 export class App extends Component {
   render() {
@@ -11,10 +13,10 @@ export class App extends Component {
           w="full"
           justify="center"
           align="center"
-          gap={5}
-          p={4}
-          mt={5}
-          mb={8}
+          gap="5"
+          p="4"
+          mt="5"
+          mb="8"
         >
           <Heading
             fontWeight="semibold"
@@ -29,9 +31,11 @@ export class App extends Component {
           <ButtonToggle />
         </Flex>
 
-        <section>
-          <TaskListHero />
-        </section>
+        <AddTask />
+
+        <FilterTask />
+
+        <TaskListHero />
       </Container>
     )
   }
